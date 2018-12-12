@@ -3,7 +3,7 @@ from django.utils.functional import cached_property
 
 import redis
 from redis.sentinel import Sentinel
-from redis.exceptions import ConnectionError, ResponseError
+from redis.exceptions import ConnectionError, ResponseError, DataError
 
 
 COUNTER_CACHE_KEY = 'experiments:participants:%s'
@@ -53,7 +53,7 @@ class Counters(object):
             # Remove from the histogram
             freq_cache_key = COUNTER_FREQ_CACHE_KEY % key
             self._redis.hincrby(freq_cache_key, freq, -1)
-        except (ConnectionError, ResponseError):
+        except (ConnectionError, ResponseError, DataError):
             # Handle Redis failures gracefully
             pass
 
